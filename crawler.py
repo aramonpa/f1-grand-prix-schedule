@@ -6,7 +6,7 @@ import pickle
 import sys
 import time
 import requests
-import html_to_json
+from datetime import datetime, timedelta
 from constants import * 
 
 class ScheduleCrawler(object):
@@ -51,43 +51,45 @@ class ScheduleCrawler(object):
         return logger
 
     def scrape(self):
-            # Get users information
-            #self.session.headers.update({'user-agent': STORIES_UA})
+        # Get users information
+        try:
+            # Get the user metadata.
+            user = self.getUserInfo(self.username)
 
-            user = ''
-            try:
-                # Get the user metadata.
-                user = self.getUserInfo(self.username)
-                outputJson = html_to_json.convert(user.text)
-                # TO DO -- Create test mode
-                # Test mode will load json into a file for be more readable
-                f = open('test', 'w')
-                f.write(json.dumps(outputJson))
+            # TO DO -- Create test mode
+            # Test mode will load json into a file for be more readable
+            f = open('test', 'w')
+            f.write(json.dumps(user))
 
-                print('eee')
+            if not user:
+                self.logger.error('Error getting user details for {0}. Please verify that user.'.format(self.username))
 
-                if not user:
-                    self.logger.error('Error getting user details for {0}. Please verify that user.'.format(self.username))
+        except ValueError:
+            self.logger.error("Unable to scrape user - %s" % self.username)
+        finally:
+            self.quit = True
 
-            except ValueError:
-                self.logger.error("Unable to scrape user - %s" % self.username)
-            finally:
-                self.quit = True
-
-            return user
+        return user
 
     def getUserInfo(self, username=''):
-            # Fetches user metadata
-            resp = self.getJson(BASE_URL + username)
-            return resp
+        # Fetches user metadata
+        resp = self.getJson(BASE_URL)
+        return resp
 
     def getJson(self, url):
             # Retrieve text from URL. JSON as string
             resp = self.getResponse(url)
 
             if resp is not None:
-                #data = resp.text.split("window._sharedData = ")[1].split(";</script>")[0]
-                return resp
+                return self.convertToJson(resp.text)['MRData']['RaceTable']
+    
+    def convertToJson(self, text):
+        # Convert text into JSON
+        try:
+            return json.loads(text)
+        except json.JSONDecodeError as error:
+            self.logger.error('Text is not json: ' + text)
+            raise
 
     def getResponse(self, url):
             # Gets response from Instagram
@@ -119,5 +121,31 @@ class ScheduleCrawler(object):
                     
                     raise
 
+    def getSchedule(self):
+        data = self.scrape()
+
+        circuit = data['Races'][0]['Circuit']['circuitName']
+        raceDate = data['Races'][0]['date']
+        raceTime = data['Races'][0]['time'].replace('Z', '')
+        freePracticeOneDate = data['Races'][0]['FirstPractice']['date']
+        freePracticeOneTime = data['Races'][0]['FirstPractice']['time'].replace('Z', '')
+        freePracticeTwoDate = data['Races'][0]['SecondPractice']['date']
+        freePracticeTwoTime = data['Races'][0]['SecondPractice']['time'].replace('Z', '')
+        freePracticeThreeDate = data['Races'][0]['ThirdPractice']['date']
+        freePracticeThreeTime = data['Races'][0]['ThirdPractice']['time'].replace('Z', '')
+        qualyDate = data['Races'][0]['Qualifying']['date']
+        qualyTime = data['Races'][0]['Qualifying']['time'].replace('Z', '')
+
+        print(
+            'Circuito: ', circuit,'\n'
+            'Libres 1: ', freePracticeOneDate, ' - ', freePracticeOneTime, '\n'
+            'Libres 2: ', freePracticeTwoDate, ' - ', freePracticeTwoTime   , '\n'
+            'Libres 3: ', freePracticeThreeDate, ' - ', freePracticeThreeTime, '\n'
+            'Qualy: ', qualyDate, ' - ', qualyTime, '\n'
+            'Carrera: ', raceDate, ' - ', raceTime, '\n')
+        return raceTime
+
 scrape = ScheduleCrawler(username = 'gran-premio-bahrein')
-gp = scrape.scrape()
+#gp = scrape.scrape()
+
+scrape.getSchedule()
