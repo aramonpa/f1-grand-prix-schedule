@@ -6,6 +6,7 @@ import pickle
 import sys
 import time
 import requests
+from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime, timedelta
 from constants import * 
 
@@ -124,28 +125,29 @@ class ScheduleCrawler(object):
     def getSchedule(self):
         data = self.scrape()
 
-        circuit = data['Races'][0]['Circuit']['circuitName']
-        raceDate = data['Races'][0]['date']
-        raceTime = data['Races'][0]['time'].replace('Z', '')
-        freePracticeOneDate = data['Races'][0]['FirstPractice']['date']
-        freePracticeOneTime = data['Races'][0]['FirstPractice']['time'].replace('Z', '')
-        freePracticeTwoDate = data['Races'][0]['SecondPractice']['date']
-        freePracticeTwoTime = data['Races'][0]['SecondPractice']['time'].replace('Z', '')
-        freePracticeThreeDate = data['Races'][0]['ThirdPractice']['date']
-        freePracticeThreeTime = data['Races'][0]['ThirdPractice']['time'].replace('Z', '')
-        qualyDate = data['Races'][0]['Qualifying']['date']
-        qualyTime = data['Races'][0]['Qualifying']['time'].replace('Z', '')
-
-        print(
-            'Circuito: ', circuit,'\n'
-            'Libres 1: ', freePracticeOneDate, ' - ', freePracticeOneTime, '\n'
-            'Libres 2: ', freePracticeTwoDate, ' - ', freePracticeTwoTime   , '\n'
-            'Libres 3: ', freePracticeThreeDate, ' - ', freePracticeThreeTime, '\n'
-            'Qualy: ', qualyDate, ' - ', qualyTime, '\n'
-            'Carrera: ', raceDate, ' - ', raceTime, '\n')
-        return raceTime
+        return {'circuit': data['Races'][0]['Circuit']['circuitName'],
+                'freePracticeOneDate': data['Races'][0]['FirstPractice']['date'],
+                'freePracticeOneTime': data['Races'][0]['FirstPractice']['time'].replace('Z', ''),
+                'freePracticeTwoDate': data['Races'][0]['SecondPractice']['date'],
+                'freePracticeTwoTime': data['Races'][0]['SecondPractice']['time'].replace('Z', ''),
+                'freePracticeThreeDate': data['Races'][0]['ThirdPractice']['date'],
+                'freePracticeThreeTime': data['Races'][0]['ThirdPractice']['time'].replace('Z', ''),
+                'qualyDate': data['Races'][0]['Qualifying']['date'],
+                'qualyTime': data['Races'][0]['Qualifying']['time'].replace('Z', ''),
+                'raceDate': data['Races'][0]['date'],
+                'raceTime': data['Races'][0]['time'].replace('Z', '')}
 
 scrape = ScheduleCrawler(username = 'gran-premio-bahrein')
-#gp = scrape.scrape()
+schedule = scrape.getSchedule()
 
-scrape.getSchedule()
+img = Image.new('RGB', (800, 400), color='gray')
+
+fnt = ImageFont.truetype('C:\Windows\Fonts\Arial.ttf', 30)
+d = ImageDraw.Draw(img)
+d.text((10, 10), 'Circuito: ' + schedule['circuit'], font=fnt, fill=(255, 255, 255))
+d.text((10, 50), 'Libres 1: ' + schedule['freePracticeOneDate'] + ' - ' + schedule['freePracticeOneTime'], font=fnt, fill=(255, 255, 255))
+d.text((10, 90), 'Libres 2: ' + schedule['freePracticeTwoDate'] + ' - ' + schedule['freePracticeTwoTime'], font=fnt, fill=(255, 255, 255))
+d.text((10, 130), 'Libres 3: ' + schedule['freePracticeThreeDate'] + ' - ' + schedule['freePracticeThreeTime'], font=fnt, fill=(255, 255, 255))
+d.text((10, 170), 'Clasificación: ' + schedule['qualyDate'] + ' - ' + schedule['qualyTime'], font=fnt, fill=(255, 255, 255))
+d.text((10, 210), 'Carrera: ' + schedule['raceDate'] + ' - ' + schedule['raceTime'], font=fnt, fill=(255, 255, 255))
+print(img.show())
