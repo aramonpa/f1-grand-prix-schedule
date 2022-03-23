@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Schedule</title>
+	<link rel="stylesheet" href="schedule.css">
+</head>
+<body>
+	<div class="f1-race-hub--timetable-listings" id="DIV_1">
+		<div class="row js-race" id="DIV_2">
+			<div class="col-12 upcoming" id="DIV_20">
+				<div class="f1-timetable--row f1-bg--white" id="DIV_21">
+					<p class="f1-timetable--date" id="P_22">
+						 <span class="f1-timetable--day" id="SPAN_23">{pDayOne}</span> <span class="f1-timetable--month f1-bg--gray2 f1-label f1-color--gray5" id="SPAN_24">{pMonthOne}</span>
+					</p>
+					<div class="f1-timetable--details" id="DIV_25">
+						<p class="f1-timetable--title" id="P_26">
+							Race
+						</p>
+						<p class="f1-timetable--time f1-color--gray5" id="P_27">
+							<span class="start-time" id="SPAN_28">{pHourOne}</span><!-- - <span class="end-time" id="SPAN_29">18:00</span>-->
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row js-qualifying" id="DIV_30">
+			<div class="col-12 upcoming" id="DIV_48">
+				<div class="f1-timetable--row f1-bg--white" id="DIV_49">
+					<p class="f1-timetable--date" id="P_50">
+						 <span class="f1-timetable--day" id="SPAN_51">{pDayTwo}</span> <span class="f1-timetable--month f1-bg--gray2 f1-label f1-color--gray5" id="SPAN_52">{pMonthTwo}</span>
+					</p>
+					<div class="f1-timetable--details" id="DIV_53">
+						<p class="f1-timetable--title" id="P_54">
+							Libres 2
+						</p>
+						<p class="f1-timetable--time f1-color--gray5" id="P_55">
+							<span class="start-time" id="SPAN_56">{pHourTwo}</span><!-- - <span class="end-time" id="SPAN_29">18:00</span>-->
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row js-practice-3 js-current-session" id="DIV_58">
+			<div class="col-12 started d-none" id="DIV_59">
+			</div>
+			<div class="col-12 upcoming" id="DIV_76">
+				<div class="f1-timetable--row f1-bg--white" id="DIV_77">
+					<p class="f1-timetable--date" id="P_78">
+						 <span class="f1-timetable--day" id="SPAN_79">{pDayThree}</span> <span class="f1-timetable--month f1-bg--gray2 f1-label f1-color--gray5" id="SPAN_80">{pMonthThree}</span>
+					</p>
+					<div class="f1-timetable--details" id="DIV_81">
+						<p class="f1-timetable--title" id="P_82">
+							Libres 3
+						</p>
+						<p class="f1-timetable--time f1-color--gray5" id="P_83">
+							<span class="start-time" id="SPAN_84">{pHourThree}</span><!-- - <span class="end-time" id="SPAN_29">18:00</span>-->
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row js-practice-2" id="DIV_86">
+			<div class="col-12 completed" id="DIV_87">
+				<div class="f1-timetable--row f1-bg--white expandable" id="DIV_88">
+					<p class="f1-timetable--date" id="P_89">
+						 <span class="f1-timetable--day" id="SPAN_90">{qDay}</span> <span class="f1-timetable--month f1-bg--gray2 f1-label f1-color--gray5" id="SPAN_91">{qMonth}</span>
+					</p>
+					<div class="f1-timetable--details" id="DIV_92">
+						<p class="f1-timetable--title" id="P_93">
+							Clasificaci&oacute;n
+						</p>
+						<div class="f1-timetable--time" id="DIV_94">
+							<p class="f1-timetable--time f1-color--gray5" id="P_95">
+							</p>
+							<p class="f1-timetable--time f1-color--gray5" id="P_83">
+								<span class="start-time" id="SPAN_84">{qHour}</span><!-- - <span class="end-time" id="SPAN_29">18:00</span>-->
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row js-practice-1" id="DIV_102">
+			<div class="col-12 completed" id="DIV_103">
+				<div class="f1-timetable--row f1-bg--white expandable" id="DIV_104">
+					<p class="f1-timetable--date" id="P_105">
+						 <span class="f1-timetable--day" id="SPAN_106">{rDay}</span> <span class="f1-timetable--month f1-bg--gray2 f1-label f1-color--gray5" id="SPAN_107">{rMonth}</span>
+					</p>
+					<div class="f1-timetable--details" id="DIV_108">
+						<p class="f1-timetable--title" id="P_109">
+							Carrera
+						</p>
+						<div class="f1-timetable--time" id="DIV_110">
+							<p class="f1-timetable--time f1-color--gray5" id="P_111">
+							</p>
+							<p class="f1-timetable--time f1-color--gray5" id="P_83">
+								<span class="start-time" id="SPAN_84">{rHour}</span><!-- - <span class="end-time" id="SPAN_29">18:00</span>-->
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+</body>
+</html>
+

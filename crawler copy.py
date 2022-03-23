@@ -3,11 +3,13 @@ import json
 import logging.config
 import os
 import pickle
+import string
 import sys
 import time
 import requests
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime, timedelta
+from html2image import Html2Image
 from constants import * 
 
 class ScheduleCrawler(object):
@@ -124,16 +126,16 @@ class ScheduleCrawler(object):
 
     def formatSchedule(self, data):
         circuit = data['Races'][0]['Circuit']['circuitName']
-        freePracticeOneDate = ((datetime.strptime(data['Races'][0]['FirstPractice']['date'].replace('Z', ''), '%Y-%m-%d'))).strftime('%d-%m-%Y')
-        freePracticeOneTime = ((datetime.strptime(data['Races'][0]['FirstPractice']['time'].replace('Z', ''), '%H:%M:%S')) + timedelta(hours=1)).strftime('%H:%M')
-        freePracticeTwoDate = ((datetime.strptime(data['Races'][0]['SecondPractice']['date'].replace('Z', ''), '%Y-%m-%d'))).strftime('%d-%m-%Y')
-        freePracticeTwoTime = ((datetime.strptime(data['Races'][0]['SecondPractice']['time'].replace('Z', ''), '%H:%M:%S')) + timedelta(hours=1)).strftime('%H:%M')
-        freePracticeThreeDate = ((datetime.strptime(data['Races'][0]['ThirdPractice']['date'].replace('Z', ''), '%Y-%m-%d'))).strftime('%d-%m-%Y')
-        freePracticeThreeTime = ((datetime.strptime(data['Races'][0]['ThirdPractice']['time'].replace('Z', ''), '%H:%M:%S')) + timedelta(hours=1)).strftime('%H:%M')
-        qualyDate = ((datetime.strptime(data['Races'][0]['Qualifying']['date'].replace('Z', ''), '%Y-%m-%d'))).strftime('%d-%m-%Y')
-        qualyTime = ((datetime.strptime(data['Races'][0]['Qualifying']['time'].replace('Z', ''), '%H:%M:%S')) + timedelta(hours=1)).strftime('%H:%M')
-        raceDate = ((datetime.strptime(data['Races'][0]['date'].replace('Z', ''), '%Y-%m-%d'))).strftime('%d-%m-%Y')
-        raceTime = ((datetime.strptime(data['Races'][0]['time'].replace('Z', ''), '%H:%M:%S')) + timedelta(hours=1)).strftime('%H:%M')
+        freePracticeOneDate = ((datetime.strptime(data['Races'][0]['FirstPractice']['date'].replace('Z', ''), '%Y-%m-%d')))
+        freePracticeOneTime = ((datetime.strptime(data['Races'][0]['FirstPractice']['time'].replace('Z', ''), '%H:%M:%S')) + timedelta(hours=1))
+        freePracticeTwoDate = ((datetime.strptime(data['Races'][0]['SecondPractice']['date'].replace('Z', ''), '%Y-%m-%d')))
+        freePracticeTwoTime = ((datetime.strptime(data['Races'][0]['SecondPractice']['time'].replace('Z', ''), '%H:%M:%S')) + timedelta(hours=1))
+        freePracticeThreeDate = ((datetime.strptime(data['Races'][0]['ThirdPractice']['date'].replace('Z', ''), '%Y-%m-%d')))
+        freePracticeThreeTime = ((datetime.strptime(data['Races'][0]['ThirdPractice']['time'].replace('Z', ''), '%H:%M:%S')) + timedelta(hours=1))
+        qualyDate = ((datetime.strptime(data['Races'][0]['Qualifying']['date'].replace('Z', ''), '%Y-%m-%d')))
+        qualyTime = ((datetime.strptime(data['Races'][0]['Qualifying']['time'].replace('Z', ''), '%H:%M:%S')) + timedelta(hours=1))
+        raceDate = ((datetime.strptime(data['Races'][0]['date'].replace('Z', ''), '%Y-%m-%d')))
+        raceTime = ((datetime.strptime(data['Races'][0]['time'].replace('Z', ''), '%H:%M:%S')) + timedelta(hours=1))
 
         return {'circuit': circuit,
                 'freePracticeOneDate': freePracticeOneDate,
@@ -160,14 +162,37 @@ fnt = ImageFont.truetype('C:\\Windows\\Fonts\\arial.ttf', 45)
 img = ImageDraw.Draw(background)
 
 circuitWidth, circuitHeigh = circuitFnt.getsize(schedule['circuit'])
-
+""""
 img.text(((1920 - circuitWidth) / 2, 240), schedule['circuit'], font=circuitFnt, fill=(255, 255, 255))
 img.text((130, 520), schedule['freePracticeOneTime'] + 'h  Libres 1', font=fnt, fill=(255, 255, 255))
 img.text((130, 570), schedule['freePracticeTwoTime'] + 'h  Libres 2', font=fnt, fill=(255, 255, 255))
 img.text((739, 520), schedule['freePracticeThreeTime'] + 'h  Libres 3', font=fnt, fill=(255, 255, 255))
 img.text((739, 570), schedule['qualyTime'] + 'h  Clasificación', font=fnt, fill=(255, 255, 255))
 img.text((1360, 520), schedule['qualyTime'] + 'h  Carrera', font=fnt, fill=(255, 255, 255))
+"""
 
+#print(background.show())
+with open("assetts\\components\\schedule.html") as f:
+    htmlString = f.read()
 
-print(background.show())
+htmlString = htmlString.format(
+    circuit = schedule['circuit'],
+    pDayOne = schedule['freePracticeOneDate'].strftime('%d'),
+    pMonthOne = schedule['freePracticeOneDate'].strftime('%b'),
+    pHourOne = schedule['freePracticeOneTime'].strftime('%H:%M'),
+    pDayTwo = schedule['freePracticeTwoDate'].strftime('%d'),
+    pMonthTwo = schedule['freePracticeTwoDate'].strftime('%b'),
+    pHourTwo = schedule['freePracticeTwoTime'].strftime('%H:%M'),
+    pDayThree = schedule['freePracticeThreeDate'].strftime('%d'),
+    pMonthThree = schedule['freePracticeThreeDate'].strftime('%b'),
+    pHourThree = schedule['freePracticeThreeTime'].strftime('%H:%M'),
+    qDay = schedule['qualyDate'].strftime('%d'),
+    qMonth = schedule['qualyDate'].strftime('%b'),
+    qHour = schedule['qualyTime'].strftime('%H:%M'),
+    rDay = schedule['raceDate'].strftime('%d'),
+    rMonth = schedule['raceDate'].strftime('%b'),
+    rHour = schedule['raceTime'].strftime('%H:%M'))
 
+hti = Html2Image()
+hti.screenshot(html_str=htmlString, css_file='assetts\components\schedule.css', save_as='python_org.png', size=(100, 100)) #550 x 590
+#hti.screenshot(html_file='assetts\components\schedule.html', css_file='assetts\components\schedule.css', save_as='out.png', size=(350, 440))
