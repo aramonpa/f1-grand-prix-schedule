@@ -194,5 +194,16 @@ htmlString = htmlString.format(
     rHour = schedule['raceTime'].strftime('%H:%M'))
 
 hti = Html2Image()
-hti.screenshot(html_str=htmlString, css_file='assetts\components\schedule.css', save_as='python_org.png', size=(100, 100)) #550 x 590
+hti.screenshot(html_str=htmlString, css_file='assetts\components\schedule.css', save_as='out.png', size=(1920, 1080)) #550 x 590
+
+png = Image.open('out.png')
+
+#wide one is 565
+#vertical one is 400x650
+area = (0, 0, 565, 565)
+croppedPng = png.crop(area)
+croppedPng.show()
+croppedPng.save('easy.png')
+
+
 #hti.screenshot(html_file='assetts\components\schedule.html', css_file='assetts\components\schedule.css', save_as='out.png', size=(350, 440))
